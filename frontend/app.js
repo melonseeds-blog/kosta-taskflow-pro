@@ -51,6 +51,20 @@ function formatDue(dueIso) {
   return `D${sign}${abs} ${hh}:${mm}`;
 }
 
+// created_at: 상대 시간 ("n분 전") — dayjs + ko locale
+function formatRelative(iso) {
+  if (!iso) return '';
+  const d = dayjs(iso);
+  return d.isValid() ? d.fromNow() : '';
+}
+
+// 절대 시간 (툴팁용): "YYYY-MM-DD HH:mm"
+function formatAbsolute(iso) {
+  if (!iso) return '';
+  const d = dayjs(iso);
+  return d.isValid() ? d.format('YYYY-MM-DD HH:mm') : '';
+}
+
 // datetime-local <-> ISO 8601(UTC) 변환
 function toLocalDateTimeInput(iso) {
   if (!iso) return '';
@@ -143,12 +157,26 @@ function renderList() {
     titleSpan.textContent = t.title;
     titleWrap.appendChild(titleSpan);
 
+    const metaRow = document.createElement('div');
+    metaRow.className = 'flex flex-wrap gap-x-2 gap-y-0.5 mt-0.5 text-xs';
+
     if (t.due_at) {
-      const dueEl = document.createElement('div');
-      dueEl.className = 'text-xs text-slate-500 dark:text-slate-400 mt-0.5';
+      const dueEl = document.createElement('span');
+      dueEl.className = 'text-slate-500 dark:text-slate-400';
       dueEl.textContent = formatDue(t.due_at);
-      titleWrap.appendChild(dueEl);
+      dueEl.title = formatAbsolute(t.due_at);
+      metaRow.appendChild(dueEl);
     }
+
+    if (t.created_at) {
+      const createdEl = document.createElement('span');
+      createdEl.className = 'text-slate-400 dark:text-slate-500';
+      createdEl.textContent = `· 생성 ${formatRelative(t.created_at)}`;
+      createdEl.title = formatAbsolute(t.created_at);
+      metaRow.appendChild(createdEl);
+    }
+
+    if (metaRow.children.length) titleWrap.appendChild(metaRow);
 
     const delBtn = document.createElement('button');
     delBtn.type = 'button';

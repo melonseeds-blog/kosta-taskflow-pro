@@ -5,7 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>TaskFlow Pro</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- 날짜 포맷팅: dayjs + ko locale + relativeTime plugin (03-design #9) -->
+  <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.13/dayjs.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.13/locale/ko.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.13/plugin/relativeTime.js"></script>
   <script>
+    dayjs.extend(dayjs_plugin_relativeTime);
+    dayjs.locale('ko');
     // Tailwind: 클래스 기반 다크모드
     tailwind.config = { darkMode: 'class' };
     // FOUC 방지: HTML 로드 즉시 테마 결정

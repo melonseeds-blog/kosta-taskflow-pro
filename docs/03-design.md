@@ -82,6 +82,17 @@
 
 ---
 
+### 9) 프론트엔드 날짜 포맷팅
+
+| 항목 | 내용 |
+|---|---|
+| **선택** | **dayjs** (코어) + `locale/ko` + `plugin/relativeTime` (CDN 로드) |
+| **대안** | date-fns (CDN 통합 로드 무거움), Luxon (~70KB · MVP에 과함), 순수 `Date.toLocaleString` (상대 시간 미지원) |
+| **근거** | 코어 ~2KB, CDN UMD 로드 가능 → Vanilla + CDN 정책(결정 #2)과 정합. 한국어 locale 내장, `fromNow()` 한 줄로 "n분 전" 표시. |
+| **트레이드오프** | 타임존 다국화·달력 연산이 본격 필요해지면 Luxon으로 교체 필요. CDN 의존이라 오프라인 환경에서 동작 안 함. |
+
+---
+
 ## 보조 의존성 (Support Dependencies)
 
 본 문서 결정 표(1~8)에서 선택한 핵심 스택을 운영·테스트하기 위해 필요한 **표준 동반 도구**.
