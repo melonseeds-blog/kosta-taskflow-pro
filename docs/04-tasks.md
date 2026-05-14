@@ -46,8 +46,9 @@
 
 ---
 
-## Phase 3 — 프론트 (8단계)
+## Phase 3 — 프론트 (8단계) ✅ 완료
 > 목표: `frontend/` 디렉토리에 HTML + Vanilla JS + Tailwind CDN으로 메인 화면을 구축하고 백엔드와 연결한 뒤 GitHub에 push 한다.
+> 검증: 코드/자동 검증 완료 — 커밋 `4b38b3f` (UI 구현, `origin/main` push 완료) + 후속 `dayjs` 통합. 시각/반응형 수동 검증은 사용자 브라우저로 진행.
 
 | # | 작업 | 검증 방법 |
 |---|---|---|
