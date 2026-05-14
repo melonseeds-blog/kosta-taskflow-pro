@@ -1,11 +1,15 @@
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 
 from app.db import Base, engine
 from app.routers import tasks
+
+FRONTEND_DIR = Path(__file__).resolve().parents[2] / "frontend"
 
 
 @asynccontextmanager
@@ -32,3 +36,10 @@ app.include_router(tasks.router)
 @app.get("/health", tags=["meta"])
 def health() -> dict[str, str]:
     return {"status": "ok"}
+
+
+# 정적 파일(frontend) 서빙은 라우터 등록 이후에 마운트
+if FRONTEND_DIR.is_dir():
+    app.mount(
+        "/", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend"
+    )

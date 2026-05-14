@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>TaskFlow Pro</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    // Tailwind: 클래스 기반 다크모드
+    tailwind.config = { darkMode: 'class' };
+    // FOUC 방지: HTML 로드 즉시 테마 결정
+    (function () {
+      try {
+        var saved = localStorage.getItem('theme');
+        var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var theme = saved || (prefersDark ? 'dark' : 'light');
+        if (theme === 'dark') document.documentElement.classList.add('dark');
+      } catch (e) { /* SSR/프라이빗 모드 등 무시 */ }
+    })();
+  </script>
+  <style>
+    html {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+                   "SF Pro Text", "Helvetica Neue", Arial, "Apple SD Gothic Neo",
+                   "Noto Sans KR", sans-serif;
+    }
+    body { background: #f5f5f7; }
+    html.dark body { background: #1c1c1e; }
+  </style>
+</head>
+<body class="text-slate-900 dark:text-slate-100 min-h-screen">
+  <div class="max-w-3xl mx-auto px-4 py-6 sm:py-10">
+
+    <!-- 헤더 -->
+    <header class="flex items-center justify-between mb-6">
+      <h1 class="text-2xl font-semibold tracking-tight">TaskFlow Pro</h1>
+      <button id="themeToggle"
+        class="min-w-[44px] min-h-[44px] rounded-xl px-3 backdrop-blur bg-white/60 dark:bg-white/10 shadow-md hover:shadow-lg transition"
+        aria-label="테마 전환">
+        <span id="themeIcon">🌙</span>
+      </button>
+    </header>
+
+    <!-- 추가 폼 -->
+    <section class="mb-6">
+      <form id="createForm"
+        class="rounded-2xl backdrop-blur bg-white/70 dark:bg-white/10 shadow-lg p-4 sm:p-5 space-y-3">
+        <div class="flex flex-col sm:flex-row gap-3">
+          <input id="titleInput" required maxlength="200" placeholder="할 일 제목"
+            class="flex-1 min-h-[44px] rounded-xl px-3 bg-white/80 dark:bg-white/5 shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-400" />
+          <select id="statusInput"
+            class="min-h-[44px] rounded-xl px-3 bg-white/80 dark:bg-white/5 shadow-inner">
+            <option value="todo">할 일</option>
+            <option value="in_progress">진행 중</option>
+            <option value="done">완료</option>
+          </select>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-3">
+          <input id="dueAtInput" type="datetime-local"
+            class="flex-1 min-h-[44px] rounded-xl px-3 bg-white/80 dark:bg-white/5 shadow-inner" />
+          <button type="submit"
+            class="min-h-[44px] rounded-xl px-5 bg-blue-500 text-white shadow-md hover:shadow-lg hover:bg-blue-600 transition">
+            추가
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- 목록 -->
+    <section>
+      <div id="taskList" class="space-y-3"></div>
+      <div id="emptyState" class="hidden text-center text-slate-500 dark:text-slate-400 py-12">
+        아직 등록된 작업이 없습니다.
+      </div>
+    </section>
+  </div>
+
+  <!-- 수정 모달 -->
+  <div id="editModal"
+    class="hidden fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-3">
+    <form id="editForm"
+      class="w-full max-w-md rounded-2xl bg-white dark:bg-slate-800 shadow-2xl p-5 space-y-3">
+      <h2 class="text-lg font-semibold">작업 수정</h2>
+      <input type="hidden" id="editId" />
+      <label class="block">
+        <span class="text-sm text-slate-500 dark:text-slate-400">제목</span>
+        <input id="editTitle" required maxlength="200"
+          class="mt-1 w-full min-h-[44px] rounded-xl px-3 bg-slate-100 dark:bg-slate-700 shadow-inner" />
+      </label>
+      <label class="block">
+        <span class="text-sm text-slate-500 dark:text-slate-400">설명</span>
+        <textarea id="editDescription" rows="3"
+          class="mt-1 w-full rounded-xl px-3 py-2 bg-slate-100 dark:bg-slate-700 shadow-inner"></textarea>
+      </label>
+      <label class="block">
+        <span class="text-sm text-slate-500 dark:text-slate-400">상태</span>
+        <select id="editStatus"
+          class="mt-1 w-full min-h-[44px] rounded-xl px-3 bg-slate-100 dark:bg-slate-700 shadow-inner">
+          <option value="todo">할 일</option>
+          <option value="in_progress">진행 중</option>
+          <option value="done">완료</option>
+        </select>
+      </label>
+      <label class="block">
+        <span class="text-sm text-slate-500 dark:text-slate-400">마감</span>
+        <input id="editDueAt" type="datetime-local"
+          class="mt-1 w-full min-h-[44px] rounded-xl px-3 bg-slate-100 dark:bg-slate-700 shadow-inner" />
+      </label>
+      <div class="flex justify-end gap-2 pt-2">
+        <button type="button" id="editCancel"
+          class="min-h-[44px] rounded-xl px-4 bg-slate-200 dark:bg-slate-600">취소</button>
+        <button type="submit"
+          class="min-h-[44px] rounded-xl px-4 bg-blue-500 text-white shadow-md hover:bg-blue-600">저장</button>
+      </div>
+    </form>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
