@@ -92,6 +92,20 @@ def test_update_task_invalid_status_returns_400(client):
     assert response.status_code == 400
 
 
+def test_update_task_invalid_due_at_returns_400(client):
+    created = client.post("/api/tasks", json={"title": "x"}).json()
+    response = client.put(
+        f"/api/tasks/{created['id']}", json={"due_at": "not-a-date"}
+    )
+    assert response.status_code == 400
+
+
+def test_update_task_blank_title_returns_400(client):
+    created = client.post("/api/tasks", json={"title": "x"}).json()
+    response = client.put(f"/api/tasks/{created['id']}", json={"title": ""})
+    assert response.status_code == 400
+
+
 def test_update_task_missing_returns_404(client):
     response = client.put("/api/tasks/9999", json={"status": "done"})
     assert response.status_code == 404
