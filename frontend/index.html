@@ -40,11 +40,18 @@
     <!-- 헤더 -->
     <header class="flex items-center justify-between mb-6">
       <h1 class="text-2xl font-semibold tracking-tight">TaskFlow Pro</h1>
-      <button id="themeToggle"
-        class="min-w-[44px] min-h-[44px] rounded-xl px-3 backdrop-blur bg-white/60 dark:bg-white/10 shadow-md hover:shadow-lg transition"
-        aria-label="테마 전환">
-        <span id="themeIcon">🌙</span>
-      </button>
+      <div class="flex gap-2">
+        <button id="exportBtn"
+          class="min-h-[44px] rounded-xl px-3 backdrop-blur bg-white/60 dark:bg-white/10 shadow-md hover:shadow-lg transition text-sm"
+          aria-label="JSON 내보내기">
+          내보내기
+        </button>
+        <button id="themeToggle"
+          class="min-w-[44px] min-h-[44px] rounded-xl px-3 backdrop-blur bg-white/60 dark:bg-white/10 shadow-md hover:shadow-lg transition"
+          aria-label="테마 전환">
+          <span id="themeIcon">🌙</span>
+        </button>
+      </div>
     </header>
 
     <!-- 추가 폼 -->

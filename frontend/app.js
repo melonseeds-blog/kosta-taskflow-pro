@@ -214,6 +214,39 @@ function closeEditModal() {
   document.getElementById('editModal').classList.add('hidden');
 }
 
+// ---------------- 내보내기 ----------------
+async function exportTasks() {
+  const res = await fetch(`${API_BASE}/tasks/export`);
+  if (!res.ok) throw new Error(`API ${res.status}`);
+
+  const blob = await res.blob();
+  const cd = res.headers.get('content-disposition') || '';
+  const match = cd.match(/filename="?([^";]+)"?/);
+  const filename = match
+    ? match[1]
+    : `taskflow-export-${dayjs().format('YYYYMMDD')}.json`;
+
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+function initExport() {
+  document.getElementById('exportBtn').addEventListener('click', async () => {
+    try {
+      await exportTasks();
+    } catch (err) {
+      console.error(err);
+      alert('내보내기에 실패했습니다.');
+    }
+  });
+}
+
 // ---------------- 폼 바인딩 ----------------
 function initForms() {
   document.getElementById('createForm').addEventListener('submit', async (e) => {
@@ -274,6 +307,7 @@ function startPolling() {
 window.addEventListener('DOMContentLoaded', () => {
   initTheme();
   initForms();
+  initExport();
   fetchTasks()
     .then(startPolling)
     .catch((err) => {

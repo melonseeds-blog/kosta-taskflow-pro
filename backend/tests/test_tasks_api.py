@@ -122,3 +122,48 @@ def test_delete_task_returns_204_then_404(client):
 def test_delete_task_missing_returns_404(client):
     response = client.delete("/api/tasks/9999")
     assert response.status_code == 404
+
+
+def test_export_empty_returns_envelope(client):
+    response = client.get("/api/tasks/export")
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["version"] == 1
+    assert payload["count"] == 0
+    assert payload["tasks"] == []
+    assert "exported_at" in payload
+    cd = response.headers.get("content-disposition", "")
+    assert "attachment" in cd.lower()
+    assert "taskflow-export" in cd
+
+
+def test_export_includes_all_task_fields(client):
+    client.post(
+        "/api/tasks",
+        json={"title": "alpha", "description": "first", "status": "todo"},
+    )
+    client.post("/api/tasks", json={"title": "beta", "status": "done"})
+    response = client.get("/api/tasks/export")
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["count"] == 2
+    item = payload["tasks"][0]
+    for key in (
+        "id",
+        "title",
+        "description",
+        "status",
+        "due_at",
+        "created_at",
+        "updated_at",
+    ):
+        assert key in item
+
+
+def test_export_path_does_not_collide_with_task_id(client):
+    # /api/tasks/export 는 /api/tasks/{task_id} 보다 먼저 매칭되어야 함
+    response = client.get("/api/tasks/export")
+    assert response.status_code == 200
+    body = response.json()
+    # 단건 조회 응답이 아니라 export 봉투인지 확인
+    assert "version" in body and "tasks" in body

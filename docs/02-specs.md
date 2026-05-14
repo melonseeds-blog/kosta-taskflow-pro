@@ -34,6 +34,7 @@
 | 3 | `GET`    | `/api/tasks/{id}` | **200** | 단건 조회        | Task 전체 (`description` 포함) |
 | 4 | `PUT`    | `/api/tasks/{id}` | **200** | **부분 수정**    | 갱신된 Task 전체 |
 | 5 | `DELETE` | `/api/tasks/{id}` | **204** | 삭제             | 없음 |
+| 6 | `GET`    | `/api/tasks/export` | **200** | 전체 작업 JSON 내보내기 | `{version, exported_at, count, tasks[]}` 봉투 / `Content-Disposition: attachment` |
 
 ### 응답 본문 차이 — 목록 vs 단건
 - **목록 (`GET /api/tasks`)**: `description` 필드 **제외** (네트워크 비용 절감)

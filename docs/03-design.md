@@ -82,6 +82,16 @@
 
 ---
 
+### 10) 데이터 내보내기 (Export)
+
+| 항목 | 내용 |
+|---|---|
+| **선택** | `GET /api/tasks/export` — JSON 파일 다운로드 (`Content-Disposition: attachment`) |
+| **대안** | CSV 형식 병행, 가져오기(Import) 까지 왕복 지원 |
+| **근거** | MVP 백업/이관 최소 요건만 충족. JSON 단일 포맷으로 응답 봉투(`{version, exported_at, count, tasks[]}`) 통일. CSV·import 도입은 검증·충돌·escape 비용 큼. |
+| **트레이드오프** | 백업만 가능, 복원은 별도 도구 또는 향후 import API 필요. CSV로 Excel 직편집 불가. |
+| **응답 봉투** | `{"version": 1, "exported_at": ISO8601, "count": N, "tasks": [TaskOut, ...]}` |
+
 ### 9) 프론트엔드 날짜 포맷팅
 
 | 항목 | 내용 |
